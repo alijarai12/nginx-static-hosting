@@ -1,0 +1,40 @@
+
+
+# another file
+upstream testservers {
+        server 4.227.220.36:3000;  # devops-vm
+        server 172.174.202.75:3000;  # nginx server
+
+    }
+
+server {
+    listen 80;
+
+    server_name test.alija-rai.com.np;
+
+    # Logging
+
+
+    access_log /var/log/nginx/test.alija-rai.com.np.access.log;
+    error_log /var/log/nginx/test.alija-rai.com.np.error.log;
+
+
+
+
+
+
+    # Serve static HTML, CSS, JS, and images
+    root /var/www/private-project/;
+    index index1.html;
+
+    location / {
+        try_files $uri $uri/ =404;
+    }
+
+    location /test {
+            proxy_pass http://testservers;
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+
+        }
